@@ -1,0 +1,32 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// API User model for authentication
+model ApiUser {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // bcrypt hashed
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("api_users")
+}
+
+// Product resource model for CRUD operations
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  sku         String   @unique
+  description String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("products")
+}
