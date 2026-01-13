@@ -22,18 +22,19 @@ This is a complete ExpressJS backend implementation featuring:
 
 ## Features
 
-- ✅ Full CRUD operations (Create, Read, Update, Delete)
-- ✅ JWT-based authentication with token expiration
-- ✅ **Swagger/OpenAPI Documentation** - Interactive API documentation at `/api-docs`
-- ✅ Input validation with Zod (runtime type checking)
-- ✅ SQLite database with Prisma ORM (type-safe queries)
-- ✅ Advanced filtering and pagination
-- ✅ Comprehensive error handling with custom error classes
-- ✅ Rate limiting and security headers (Helmet, CORS)
-- ✅ Integration tests with 100% endpoint coverage
-- ✅ TypeScript with strict type checking
-- ✅ Environment-based configuration
-- ✅ Graceful shutdown handling
+- Full CRUD operations (Create, Read, Update, Delete)
+- JWT-based authentication with token expiration
+- **Swagger/OpenAPI Documentation** - Interactive API documentation at `/api-docs`
+- Input validation with Zod (runtime type checking)
+- SQLite database with Prisma ORM (type-safe queries)
+- Advanced filtering and pagination
+- Comprehensive error handling with custom error classes
+- Rate limiting and security headers (Helmet, CORS)
+- Integration tests with 100% endpoint coverage
+- TypeScript with strict type checking
+- Environment-based configuration
+- Graceful shutdown handling
+- Docker support for deployment
 
 ## Tech Stack
 
@@ -129,7 +130,7 @@ Features:
 - 🔐 Built-in authentication testing (click "Authorize" and enter your JWT token)
 - 🧪 Try-it-out functionality for all endpoints
 - 📋 Request/response schemas and examples
-- ✅ All status codes and error responses documented
+- All status codes and error responses documented
 
 **OpenAPI JSON:** [http://localhost:3000/api-docs.json](http://localhost:3000/api-docs.json)
 
@@ -143,6 +144,118 @@ Build and run in production:
 npm run build
 npm start
 ```
+
+## Docker Deployment
+
+The application includes Docker and Docker Compose support for easy containerized deployment.
+
+### Prerequisites
+
+- Docker >= 20.10
+- Docker Compose >= 2.0
+
+### Quick Start with Docker Compose
+
+#### Development Mode
+
+Start the development environment with hot reloading:
+
+```bash
+docker-compose up --build
+```
+
+This will:
+- Build the Docker image with development dependencies
+- Mount source code for hot reloading
+- Run database migrations automatically
+- Expose the API on port 3000
+
+#### Production Mode
+
+Start the production environment:
+
+```bash
+docker-compose -f docker-compose.prod.yml up --build -d
+```
+
+This will:
+- Build an optimized production image (multi-stage build)
+- Run with non-root user for security
+- Enable health checks
+- Configure resource limits
+- Set up log rotation
+
+### Docker Commands
+
+```bash
+# Build and start (development)
+docker-compose up --build
+
+# Build and start (production, detached)
+docker-compose -f docker-compose.prod.yml up --build -d
+
+# Stop containers
+docker-compose down
+
+# Stop and remove volumes (WARNING: deletes database)
+docker-compose down -v
+
+# View logs
+docker-compose logs -f api
+
+# Rebuild without cache
+docker-compose build --no-cache
+
+# Check container health
+docker-compose ps
+
+# Execute command in running container
+docker-compose exec api sh
+```
+
+### Standalone Docker (without Compose)
+
+```bash
+# Build the image
+docker build -t user-crud-api .
+
+# Run the container
+docker run -d \
+  --name user-crud-api \
+  -p 3000:3000 \
+  -e JWT_SECRET=your-secret-key-minimum-32-characters-long \
+  -e DATABASE_URL=file:/app/data/prod.db \
+  -v api-data:/app/data \
+  user-crud-api
+```
+
+### Environment Variables for Docker
+
+Configure via environment variables or `.env` file:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PORT` | Application port | `3000` |
+| `NODE_ENV` | Environment mode | `production` |
+| `DATABASE_URL` | SQLite database path | `file:/app/data/prod.db` |
+| `JWT_SECRET` | JWT signing secret (min 32 chars) | **Required** |
+| `JWT_EXPIRATION` | Token expiration time | `24h` |
+| `RATE_LIMIT_WINDOW_MS` | Rate limit window (ms) | `900000` |
+| `RATE_LIMIT_MAX_REQUESTS` | Max requests per window | `100` |
+
+### Docker Image Details
+
+The Dockerfile uses a **multi-stage build** for optimal image size:
+
+1. **Builder Stage**: Compiles TypeScript, generates Prisma client
+2. **Production Stage**: Contains only production dependencies and compiled code
+
+Features:
+- Node.js 20 Alpine base (minimal image size)
+- Non-root user for security
+- Health check endpoint
+- Automatic database migration on startup
+- Persistent volume for SQLite database
 
 ### Database Management
 
@@ -484,13 +597,13 @@ curl -X DELETE http://localhost:3000/api/products/USER_ID \
 
 ## Security Considerations
 
-- ✅ Passwords are hashed with bcrypt (10 salt rounds)
-- ✅ JWT tokens with configurable expiration
-- ✅ Rate limiting to prevent abuse
-- ✅ Security headers via Helmet
-- ✅ CORS configuration
-- ✅ Input validation on all endpoints
-- ✅ SQL injection prevention via Prisma ORM
+- Passwords are hashed with bcrypt (10 salt rounds)
+- JWT tokens with configurable expiration
+- Rate limiting to prevent abuse
+- Security headers via Helmet
+- CORS configuration
+- Input validation on all endpoints
+- SQL injection prevention via Prisma ORM
 
 **Production Recommendations**:
 1. Use a strong JWT secret (min 32 characters)
@@ -644,11 +757,11 @@ All errors follow a consistent JSON format:
 - Supertest for HTTP assertions
 
 **Test Coverage**:
-- ✅ Authentication flow (register, login, token validation)
-- ✅ All CRUD operations (create, read, update, delete)
-- ✅ Filtering and pagination
-- ✅ Error scenarios (404, 400, 401)
-- ✅ Edge cases (missing fields, invalid data)
+- Authentication flow (register, login, token validation)
+- All CRUD operations (create, read, update, delete)
+- Filtering and pagination
+- Error scenarios (404, 400, 401)
+- Edge cases (missing fields, invalid data)
 
 ### Performance Considerations
 
