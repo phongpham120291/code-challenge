@@ -243,19 +243,6 @@ Configure via environment variables or `.env` file:
 | `RATE_LIMIT_WINDOW_MS` | Rate limit window (ms) | `900000` |
 | `RATE_LIMIT_MAX_REQUESTS` | Max requests per window | `100` |
 
-### Docker Image Details
-
-The Dockerfile uses a **multi-stage build** for optimal image size:
-
-1. **Builder Stage**: Compiles TypeScript, generates Prisma client
-2. **Production Stage**: Contains only production dependencies and compiled code
-
-Features:
-- Node.js 20 Alpine base (minimal image size)
-- Non-root user for security
-- Health check endpoint
-- Automatic database migration on startup
-- Persistent volume for SQLite database
 
 ### Database Management
 
